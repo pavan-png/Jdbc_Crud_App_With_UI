@@ -1,11 +1,13 @@
 package in.orcas.controller;
 
 import java.io.FileNotFoundException;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -54,12 +56,16 @@ public class ControllerServlet extends HttpServlet {
 				out = response.getWriter();
 				status = stdService.addStudent(student);
 				if(status.equals("success")) {
-					 reqDis = request.getRequestDispatcher("../success.jsp");
+					 reqDis = request.getRequestDispatcher("../result.jsp");
+					 ServletContext context = getServletContext();
+					 context.setAttribute("insert", "success");
 					 reqDis.forward(request, response);
 					
 				}
 				else {
-					reqDis = request.getRequestDispatcher("../failure.html");
+					reqDis = request.getRequestDispatcher("../result.jsp");
+					ServletContext context = getServletContext();
+					context.setAttribute("insert", "failure");
 					reqDis.forward(request, response);
 					
 				}
@@ -76,33 +82,26 @@ public class ControllerServlet extends HttpServlet {
 		}
 		if(request.getRequestURI().endsWith("searchform")) {
 			String sid = request.getParameter("sid");
+			
 			try {
 				Student student = stdService.searchStudent(Integer.parseInt(sid));
-				PrintWriter out = response.getWriter();
-				if(student!=null) {
-					out.println("<body>");
-					out.println("<center>");
-					out.println("<table border='1'>");
-					out.println("<tr><th>ID</th><td>" + student.getSid() + "</td></tr>");
-					out.println("<tr><th>NAME</th><td>" + student.getSname() + "</td></tr>");
-					out.println("<tr><th>AGE</th><td>" + student.getSage() + "</td></tr>");
-					out.println("<tr><th>ADDRESS</th><td>" + student.getSaddress() + "</td></tr>");
-					out.println("</table>");
-					out.println("</center>");
-					out.println("</body>");	
-				} else {
-					out.println("<h1 style='color:red; text-align: center; '>RECORD NOT AVAILABLE FOR THE GIVEN ID " + sid + "</h1>");
-				} 
-				out.close();
-				}catch (NumberFormatException e) {
-					e.printStackTrace();
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+				request.setAttribute("student", student);
+				reqDis = request.getRequestDispatcher("../studentdisp.jsp");
+				reqDis.forward(request, response);
+				
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ServletException e) {
+				e.printStackTrace();
+			}
+			
+				
 			
 		}
 		
@@ -113,13 +112,16 @@ public class ControllerServlet extends HttpServlet {
 				String status = stdService.deleteStudent(Integer.parseInt(sid));
 				PrintWriter out = response.getWriter();
 				if(status.equals("success")) {
-					reqDis = request.getRequestDispatcher("../success.html");
+					reqDis = request.getRequestDispatcher("../delresult.jsp");
+					request.setAttribute("delete", "success");
 					reqDis.forward(request, response);
 				}else if( status.equals("failure")) {
-					reqDis = request.getRequestDispatcher("../failure.html");
+					reqDis = request.getRequestDispatcher("../delresult.jsp");
+					request.setAttribute("delete", "failure");
 					reqDis.forward(request, response);
 				}else {
-					reqDis = request.getRequestDispatcher("../notfound.html");
+					reqDis = request.getRequestDispatcher("../delresult.jsp");
+					request.setAttribute("delete", "notfound");
 					reqDis.forward(request, response);
 				}
 				out.close();

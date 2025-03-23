@@ -36,7 +36,7 @@ public class StudentDaoImpl implements IStudentDao {
 			e.printStackTrace(); 
 		}  
 		
-		String configFile = "C:\\Users\\Administrator\\servlets\\servlet-applications\\JDBCCRUDAPP\\src\\main\\java\\in\\orcas\\properties\\application.properties";
+		String configFile = "C:\\Users\\Administrator\\Jdbc_Crud_App_With_UI\\JDBCCRUDAPP\\src\\main\\java\\in\\orcas\\properties\\application.properties";
 		HikariConfig config = new HikariConfig(configFile);
 		HikariDataSource dataSource = new HikariDataSource(config);
 		connection = dataSource.getConnection();
