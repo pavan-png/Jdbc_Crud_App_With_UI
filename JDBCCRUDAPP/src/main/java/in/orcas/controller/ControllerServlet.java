@@ -54,7 +54,7 @@ public class ControllerServlet extends HttpServlet {
 				out = response.getWriter();
 				status = stdService.addStudent(student);
 				if(status.equals("success")) {
-					 reqDis = request.getRequestDispatcher("../success.html");
+					 reqDis = request.getRequestDispatcher("../success.jsp");
 					 reqDis.forward(request, response);
 					
 				}
